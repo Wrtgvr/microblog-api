@@ -1,8 +1,10 @@
 package server
 
 import (
+	"context"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -22,12 +24,19 @@ func NewServer(port int, r *gin.Engine) *Server {
 	}
 }
 
-func (s *Server) Stop() {
-	// ??
+func (s *Server) Stop() error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	if err := s.srv.Shutdown(ctx); err != nil {
+		return fmt.Errorf("shutdown error: %w", err)
+	}
+
+	return nil
 }
 
 func (s *Server) MustRun() {
-	if err := s.Run(); err != nil {
+	if err := s.Run(); err != nil && err != http.ErrServerClosed {
 		panic(err)
 	}
 }
