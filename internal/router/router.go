@@ -1,11 +1,19 @@
 package router
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	userhandler "github.com/wrtgvr/microblog/internal/handlers/user"
+)
 
-func RegisterRoutes(r *gin.Engine) {
-	r.GET("/status", func(ctx *gin.Context) {
-		ctx.JSON(200, gin.H{
-			"message": "OK",
-		})
-	})
+func NewRouter() *gin.Engine {
+	r := gin.New()
+
+	r.Use(gin.Recovery())
+	r.Use(gin.Logger())
+
+	return r
+}
+
+func RegisterUserRoutes(r *gin.Engine, h *userhandler.UserHandler) {
+	//g := r.Group("users")
 }
