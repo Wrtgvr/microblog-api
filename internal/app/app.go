@@ -1,31 +1,32 @@
 package app
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/wrtgvr/errsuit/drivers/ginadap"
+	"github.com/wrtgvr/microblog/internal/handlers"
+	userhandler "github.com/wrtgvr/microblog/internal/handlers/user"
 	"github.com/wrtgvr/microblog/internal/router"
 	"github.com/wrtgvr/microblog/internal/server"
+	"gorm.io/gorm"
 )
 
 type App struct {
-	ErrHandler *ginadap.GinErrorHandler
-	Server     *server.Server
+	Server *server.Server
 }
 
 func NewApp(port int) *App {
 	errHandler := prepareGinErrorHandler()
+	handlerDeps := handlers.NewHandlerDeps(errHandler)
 
-	r := gin.New()
+	db := gorm.DB{} // dummy db init, will be changed soon
 
-	r.Use(gin.Recovery())
-	r.Use(gin.Logger())
+	userHandler := userhandler.NewUserHandlerWithDeps(db, handlerDeps)
+
+	r := router.NewRouter()
+	router.RegisterUserRoutes(r, userHandler)
 
 	srv := server.NewServer(port, r)
-	router.RegisterRoutes(r)
 
 	app := &App{
-		ErrHandler: errHandler,
-		Server:     srv,
+		Server: srv,
 	}
 
 	return app
