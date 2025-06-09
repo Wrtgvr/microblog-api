@@ -6,10 +6,13 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/joho/godotenv"
 	"github.com/wrtgvr/microblog/internal/app"
 )
 
 func main() {
+	godotenv.Load()
+
 	app := app.NewApp(8080)
 
 	go app.Server.MustRun()
