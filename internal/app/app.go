@@ -1,6 +1,9 @@
 package app
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/wrtgvr/microblog/internal/handlers"
 	userhandler "github.com/wrtgvr/microblog/internal/handlers/user"
 	repo "github.com/wrtgvr/microblog/internal/repository"
@@ -16,7 +19,9 @@ func NewApp(port int) *App {
 	errHandler := prepareGinErrorHandler()
 	handlerDeps := handlers.NewHandlerDeps(errHandler)
 
-	dsn := "blah blah blah" // placeholder, will extract data from config
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s",
+		os.Getenv("DB_HOST"), os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_NAME"), os.Getenv("DB_PORT"),
+	)
 
 	db := repo.MustOpenDb(dsn)
 
