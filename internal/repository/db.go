@@ -7,7 +7,11 @@ import (
 	"gorm.io/gorm"
 )
 
-func MustOpenDb(dsn string) *gorm.DB {
+type Database struct {
+	Conn *gorm.DB
+}
+
+func MustOpenDb(dsn string) *Database {
 	db, err := OpenDb(dsn)
 	if err != nil {
 		panic(err)
@@ -15,10 +19,17 @@ func MustOpenDb(dsn string) *gorm.DB {
 	return db
 }
 
-func OpenDb(dsn string) (*gorm.DB, error) {
+func OpenDb(dsn string) (*Database, error) {
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		return nil, fmt.Errorf("Database open error: %w", err)
+		return nil, fmt.Errorf("database open error: %w", err)
 	}
-	return db, nil
+	return &Database{
+		Conn: db,
+	}, nil
+}
+
+func (DB *Database) CloseConn() {
+	sqlDB, _ := DB.Conn.DB()
+	sqlDB.Close()
 }
