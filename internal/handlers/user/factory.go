@@ -2,12 +2,12 @@ package userhandler
 
 import (
 	"github.com/wrtgvr/microblog/internal/handlers"
+	repo "github.com/wrtgvr/microblog/internal/repository"
 	userrepo "github.com/wrtgvr/microblog/internal/repository/user"
 	userservice "github.com/wrtgvr/microblog/internal/services/user"
-	"gorm.io/gorm"
 )
 
-func NewUserHandlerWithDeps(db *gorm.DB, deps *handlers.HandlerDeps) *UserHandler {
+func NewUserHandlerWithDeps(db *repo.Database, deps *handlers.HandlerDeps) *UserHandler {
 	repo := userrepo.NewPostgresUserRepo(db)
 	service := userservice.NewUserService(repo)
 
