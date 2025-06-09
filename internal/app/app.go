@@ -3,9 +3,9 @@ package app
 import (
 	"github.com/wrtgvr/microblog/internal/handlers"
 	userhandler "github.com/wrtgvr/microblog/internal/handlers/user"
+	repo "github.com/wrtgvr/microblog/internal/repository"
 	"github.com/wrtgvr/microblog/internal/router"
 	"github.com/wrtgvr/microblog/internal/server"
-	"gorm.io/gorm"
 )
 
 type App struct {
@@ -16,7 +16,9 @@ func NewApp(port int) *App {
 	errHandler := prepareGinErrorHandler()
 	handlerDeps := handlers.NewHandlerDeps(errHandler)
 
-	db := gorm.DB{} // dummy db init, will be changed soon
+	dsn := "blah blah blah" // placeholder, will extract data from config
+
+	db := repo.MustOpenDb(dsn)
 
 	userHandler := userhandler.NewUserHandlerWithDeps(db, handlerDeps)
 
