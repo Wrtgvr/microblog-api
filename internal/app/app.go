@@ -1,14 +1,8 @@
 package app
 
 import (
-	"fmt"
-	"os"
-
-	"github.com/wrtgvr/microblog/internal/handlers"
-	posthandler "github.com/wrtgvr/microblog/internal/handlers/post"
-	userhandler "github.com/wrtgvr/microblog/internal/handlers/user"
+	"github.com/wrtgvr/microblog/internal/config"
 	repo "github.com/wrtgvr/microblog/internal/repository"
-	"github.com/wrtgvr/microblog/internal/router"
 	"github.com/wrtgvr/microblog/internal/server"
 )
 
@@ -17,27 +11,14 @@ type App struct {
 }
 
 func NewApp(port int) *App {
-	errHandler := prepareGinErrorHandler()
-	handlerDeps := handlers.NewHandlerDeps(errHandler)
-
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s",
-		os.Getenv("DB_HOST"), os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_NAME"), os.Getenv("DB_PORT"),
-	)
-
+	dsn := config.GetDBConnectionString()
 	db := repo.MustOpenDb(dsn)
 
-	userHandler := userhandler.NewUserHandlerWithDeps(db, handlerDeps)
-	postHandler := posthandler.NewPostHandlerWithDeps(db, handlerDeps)
+	userHandler, postHandler := initHandlers(db, prepareGinErrorHandler())
 
-	r := router.NewRouter()
-	router.RegisterUserRoutes(r, userHandler)
-	router.RegisterPostsRoutes(r, postHandler)
+	r := setupRouter(userHandler, postHandler)
 
-	srv := server.NewServer(port, r)
-
-	app := &App{
-		Server: srv,
+	return &App{
+		Server: server.NewServer(port, r),
 	}
-
-	return app
 }
