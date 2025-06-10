@@ -8,12 +8,18 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/wrtgvr/microblog/internal/app"
+	"github.com/wrtgvr/microblog/internal/config"
 )
 
 func main() {
 	godotenv.Load()
 
-	app := app.NewApp(8080)
+	cfg, err := config.LoadConfig()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	app := app.NewApp(cfg)
 
 	go app.Server.MustRun()
 
@@ -24,5 +30,6 @@ func main() {
 	if err := app.Server.Stop(); err != nil {
 		log.Printf("Shutdown error: %v\n", err)
 	}
+	// close db
 	log.Println("Server stopped")
 }

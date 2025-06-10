@@ -10,15 +10,14 @@ type App struct {
 	Server *server.Server
 }
 
-func NewApp(port int) *App {
-	dsn := config.GetDBConnectionString()
-	db := repo.MustOpenDb(dsn)
+func NewApp(cfg *config.Config) *App {
+	db := repo.MustOpenDb(cfg.DB.GetDSN())
 
 	userHandler, postHandler := initHandlers(db, prepareGinErrorHandler())
 
 	r := setupRouter(userHandler, postHandler)
 
 	return &App{
-		Server: server.NewServer(port, r),
+		Server: server.NewServer(cfg.Server.Port, r),
 	}
 }
