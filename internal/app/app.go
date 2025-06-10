@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/wrtgvr/microblog/internal/handlers"
+	posthandler "github.com/wrtgvr/microblog/internal/handlers/post"
 	userhandler "github.com/wrtgvr/microblog/internal/handlers/user"
 	repo "github.com/wrtgvr/microblog/internal/repository"
 	"github.com/wrtgvr/microblog/internal/router"
@@ -26,9 +27,11 @@ func NewApp(port int) *App {
 	db := repo.MustOpenDb(dsn)
 
 	userHandler := userhandler.NewUserHandlerWithDeps(db, handlerDeps)
+	postHandler := posthandler.NewPostHandlerWithDeps(db, handlerDeps)
 
 	r := router.NewRouter()
 	router.RegisterUserRoutes(r, userHandler)
+	router.RegisterPostsRoutes(r, postHandler)
 
 	srv := server.NewServer(port, r)
 
