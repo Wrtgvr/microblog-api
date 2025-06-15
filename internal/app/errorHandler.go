@@ -12,8 +12,9 @@ func prepareGinErrorHandler() *ginadap.GinErrorHandler {
 	l := prepareErrorLogger()
 	cfg := errsuit.Config{
 		Format: errsuit.ResponseFormatJSON,
+		Logger: l,
 	}
-	return ginadap.NewGinErrorHandler(l, cfg)
+	return ginadap.NewGinErrorHandler(cfg)
 }
 
 func prepareErrorLogger() *errsuit.Logger {
