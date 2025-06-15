@@ -1,15 +1,9 @@
 package handlers
 
-import (
-	"github.com/wrtgvr/errsuit/drivers/ginadap"
-)
-
+// unused for now
 type HandlerDeps struct {
-	ErrHandler *ginadap.GinErrorHandler
 }
 
-func NewHandlerDeps(errHandler *ginadap.GinErrorHandler) *HandlerDeps {
-	return &HandlerDeps{
-		ErrHandler: errHandler,
-	}
+func NewHandlerDeps() *HandlerDeps {
+	return &HandlerDeps{}
 }
