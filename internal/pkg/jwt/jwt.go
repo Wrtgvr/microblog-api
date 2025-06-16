@@ -163,3 +163,11 @@ func GetJtiFromRefreshToken(tokenStr string) (uuid.UUID, error) {
 	}
 	return jti, nil
 }
+
+func GetRoleFromToken(tokenStr string) (string, error) {
+	claims, err := GetTokenClaims(tokenStr)
+	if err != nil {
+		return "", err
+	}
+	return claims.Role, nil
+}
