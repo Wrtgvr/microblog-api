@@ -15,9 +15,9 @@ func NewApp(cfg *config.Config) *App {
 	db := repo.MustOpenDb(cfg.DB.GetDSN())
 	errHandler := prepareGinErrorHandler()
 
-	userHandler, postHandler := initHandlers(db, errHandler)
+	handlers := initHandlers(db, errHandler)
 
-	r := setupRouter(userHandler, postHandler)
+	r := setupRouter(handlers)
 
 	r.Use(ginadap.InjectErrHandlerMiddleware(errHandler))
 

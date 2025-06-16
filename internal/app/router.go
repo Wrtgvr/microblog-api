@@ -2,16 +2,15 @@ package app
 
 import (
 	"github.com/gin-gonic/gin"
-	posthandler "github.com/wrtgvr/microblog/internal/handlers/post"
-	userhandler "github.com/wrtgvr/microblog/internal/handlers/user"
 	"github.com/wrtgvr/microblog/internal/router"
 )
 
-func setupRouter(userHandler *userhandler.UserHandler, postHandler *posthandler.PostHandler) *gin.Engine {
+func setupRouter(h *Handlers) *gin.Engine {
 	r := router.NewRouter()
 
-	router.RegisterUserRoutes(r, userHandler)
-	router.RegisterPostsRoutes(r, postHandler)
+	router.RegisterUserRoutes(r, h.User)
+	router.RegisterPostsRoutes(r, h.Post)
+	router.RegisterAuthRoutes(r, h.Auth)
 
 	return r
 }
