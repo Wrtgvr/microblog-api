@@ -9,8 +9,8 @@ type UserResponse struct {
 }
 
 type CreateUserRequest struct {
-	Username string `json:"username" binding:"required,alphanum"`
-	Password string `json:"password" binding:"required"`
+	Username string `json:"username" binding:"required,alphanum,min=6,max=30"`
+	Password string `json:"password" binding:"required,min=8,max=30"`
 }
 
 type UpdateUserRequest struct {
